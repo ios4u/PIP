@@ -185,6 +185,7 @@
 }
 
 -(void)changePip:(NSDictionary *)dict{
+    [_cropper reset];
     if(_backImageView == nil){
 
         _backImageView = [[BackImageView alloc]init];
@@ -259,7 +260,7 @@
     }
     
     _cropper.image = [UIImage imageNamed:@"IMG_0027.JPG"];
-    [_cropper reset];
+//    [_cropper reset];
 }
 
 
