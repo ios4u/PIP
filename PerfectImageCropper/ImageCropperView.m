@@ -162,6 +162,8 @@ float _lastRotation = 0.0;
     self.imageView.transform = CGAffineTransformIdentity;
 }
 
+
+
 - (void)dealloc {
     self.image = nil;
     self.croppedImage = nil;
@@ -169,5 +171,8 @@ float _lastRotation = 0.0;
     
     [super dealloc];
 }
+//-(UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event{
+//    return self;
+//}
 
 @end

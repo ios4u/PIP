@@ -15,10 +15,11 @@
 -(UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event{
     
     UIView *hitView = [super hitTest:point withEvent:event];
+    NSArray *array = hitView.superview.subviews;
     if (!_isIrregular) {
-        return self;
+        return hitView;
     }else{
-        NSArray *array = hitView.superview.subviews;
+        
         if (array.count>0) {
             for (UIView *view in array) {
                 if ([view isKindOfClass:[ImageCropperView class]]) {
@@ -28,6 +29,7 @@
         }
         return self;
     }
+    return self;
 }
 
 @end

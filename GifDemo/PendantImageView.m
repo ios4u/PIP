@@ -10,13 +10,14 @@
 
 @implementation PendantImageView
 
--(instancetype)init{
-    self = [super init];
-    if (self) {
-        
-    }
-    return self;
-}
+//-(instancetype)init{
+//    self = [super init];
+//    if (self) {
+//        self.userInteractionEnabled = YES;
+////        self.backgroundColor = [UIColor redColor];
+//    }
+//    return self;
+//}
 
 -(UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event{
     UIView  *hitView = [super hitTest:point withEvent:event];
@@ -25,7 +26,15 @@
     }else{
         return hitView;
     }
+//    return nil;
     
 }
+
+//-(BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event{
+//    return NO;
+//}
+//-(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event{
+//    NSLog(@"-----");
+//}
 
 @end

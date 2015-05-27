@@ -188,7 +188,6 @@
     if(_backImageView == nil){
 
         _backImageView = [[BackImageView alloc]init];
-        _backImageView.userInteractionEnabled = YES;
         
         _backImageView.frame = CGRectMake(0, 0, _backgroundView.frame.size.width, _backgroundView.frame.size.height);
 
@@ -197,6 +196,7 @@
             _cropper = [[ImageCropperView alloc]init];
             [_backImageView addSubview:_cropper];
             _cropper.frame = CGRectMake(0, 0, 100, 100);
+            [_cropper setup];
         }
         
         
@@ -205,7 +205,7 @@
     NSString *name = dict[@"name"];
     BOOL hasPendant = [dict[@"hasPendant"] boolValue];
     if (hasPendant) {
-        _pendantImageView.alpha = 1;
+        _pendantImageView.alpha = 1.0;
         NSURL *pendantImageURL = [[NSBundle mainBundle] URLForResource:dict[@"pendantName"] withExtension:nil];
         [_pendantImageView sd_setImageWithURL:pendantImageURL];
     }else{
@@ -229,6 +229,12 @@
     
     BOOL isIrregular = [dict[@"isIrregular"] boolValue];
     if (isIrregular) {
+        [_pendantImageView removeFromSuperview];
+        if (hasPendant) {
+            _pendantImageView.alpha =1;
+            [_backImageView addSubview:_pendantImageView];
+        }
+        
         //不规则的背景图
         _backImageView.isIrregular = YES;
         _backImageView.userInteractionEnabled = YES;
@@ -236,22 +242,22 @@
         [_backgroundView addSubview:_cropper];
         [_backgroundView bringSubviewToFront:_backImageView];
         _cropper.frame = CGRectMake(0, 0, _backImageView.frame.size.width, _backImageView.frame.size.height);
-
+        
     }else{
         //规则背景图
-        [_pendantImageView removeFromSuperview];
+        _backImageView.userInteractionEnabled = YES;
         _backImageView.isIrregular = NO;
         [_cropper removeFromSuperview];
-        [_backImageView addSubview:_cropper];
-        [_cropper bringSubviewToFront:_pendantImageView];
+
         _cropper.frame = CGRectMake(kScreenWidth/320*photoFrame.origin.x, kScreenWidth/320*photoFrame.origin.y, kScreenWidth/320*photoFrame.size.width, kScreenWidth/320*photoFrame.size.height);
-        
+        [_backImageView addSubview:_cropper];
         _pendantImageView.frame = CGRectMake(0, 0, _cropper.frame.size.width, _cropper.frame.size.height);
         _pendantImageView.userInteractionEnabled = YES;
-        _cropper.userInteractionEnabled = YES;
+        
         [_cropper addSubview:_pendantImageView];
+//        [_cropper bringSubviewToFront:_pendantImageView];
     }
-    [_cropper setup];
+    
     _cropper.image = [UIImage imageNamed:@"IMG_0027.JPG"];
     [_cropper reset];
 }
@@ -279,7 +285,7 @@
     btn.selected = !btn.selected;
     if (btn.selected) {
         if (!_tableView) {
-            _tableView = [[UITableView alloc]initWithFrame:CGRectMake(btn.frame.origin.x-btn.frame.size.width/2, btn.frame.origin.y-300, 200, 300) style:UITableViewStylePlain];
+            _tableView = [[UITableView alloc]initWithFrame:CGRectMake(btn.frame.origin.x-btn.frame.size.width/2, btn.frame.origin.y-300, 300, 300) style:UITableViewStylePlain];
             _tableView.delegate =self;
             _tableView.dataSource = self;
             _tableView.backgroundColor = [UIColor lightGrayColor];
@@ -346,9 +352,6 @@
     
 }
 
-//-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-//    return <#height#>;
-//}
 
 -(UITableViewCell *) tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     static NSString *cellID = @"cell";
@@ -359,6 +362,7 @@
     
     NSDictionary *dict = _array[indexPath.row];
     //设置cell数据
+    cell.imageView.image = [UIImage imageNamed:dict[@"name"]];
     cell.textLabel.text = dict[@"name"];
     return cell;
 }
