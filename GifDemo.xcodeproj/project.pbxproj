@@ -155,9 +155,9 @@
 		1D50F7911B155DCD00FD70B6 /* PIP */ = {
 			isa = PBXGroup;
 			children = (
-				1D5EF3EC1B14464800DAD302 /* 画中画02背景.gif */,
 				1D50F7921B155DCD00FD70B6 /* 画中画01前景效果.png */,
 				1D50F7931B155DCD00FD70B6 /* 画中画01背景.jpg */,
+				1D5EF3EC1B14464800DAD302 /* 画中画02背景.gif */,
 				1D50F7941B155DCD00FD70B6 /* 画中画04背景.jpg */,
 				1D50F7951B155DCD00FD70B6 /* 画中画04前景效果.png */,
 				1D50F7961B155DCD00FD70B6 /* 画中画05背景.jpg */,
@@ -561,7 +561,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "80820e3e-b2c3-4f7f-a835-bace5eca6832";
+				PROVISIONING_PROFILE = "09e9c3ea-1187-40fd-b7b9-6f38d4363107";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;

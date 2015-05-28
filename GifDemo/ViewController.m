@@ -316,7 +316,9 @@
             UIView *tempView = [[UIView alloc] initWithFrame:CGRectFromString(dic[@"bounds"])];
             tempView.backgroundColor = [UIColor colorWithPatternImage:dic[@"images"][index]];
             UIImageView *imageView = [[UIImageView alloc]initWithImage:image];
-            imageView.frame = CGRectMake(195, 40, 251, 302);
+            CGRect photoFrame = [_selectedPipDic[@"photoFrame"] CGRectValue];
+//            imageView.frame = CGRectMake(195, 40, 251, 302);
+            imageView.frame = CGRectMake(photoFrame.origin.x*2, photoFrame.origin.y*2, photoFrame.size.width*2, photoFrame.size.height*2);
             [tempView addSubview:imageView];
             
             
@@ -360,7 +362,6 @@
     if (cell == nil) {
         cell  = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellID];
     }
-    
     NSDictionary *dict = _array[indexPath.row];
     //设置cell数据
     cell.imageView.image = [UIImage imageNamed:dict[@"name"]];
