@@ -47,8 +47,8 @@
 		1D5EF41F1B144D6200DAD302 /* UIImageView+HighlightedWebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D5EF40D1B144D6200DAD302 /* UIImageView+HighlightedWebCache.m */; };
 		1D5EF4201B144D6200DAD302 /* UIImageView+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D5EF40F1B144D6200DAD302 /* UIImageView+WebCache.m */; };
 		1D5EF4211B144D6200DAD302 /* UIView+WebCacheOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D5EF4111B144D6200DAD302 /* UIView+WebCacheOperation.m */; };
-		1D5EF4281B144D7E00DAD302 /* UIImage+Rotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D5EF4261B144D7E00DAD302 /* UIImage+Rotation.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		1D5EF4381B14670700DAD302 /* ImageCropperView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D5EF4371B14670700DAD302 /* ImageCropperView.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		1D5EF4281B144D7E00DAD302 /* UIImage+Rotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D5EF4261B144D7E00DAD302 /* UIImage+Rotation.m */; };
+		1D5EF4381B14670700DAD302 /* ImageCropperView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D5EF4371B14670700DAD302 /* ImageCropperView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -555,6 +555,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_OBJC_ARC = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: HU YANG (97A5JZA92N)";
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = GifDemo/Info.plist;
@@ -570,6 +571,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_OBJC_ARC = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = GifDemo/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;

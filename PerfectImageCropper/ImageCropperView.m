@@ -18,7 +18,7 @@
     CGSize _originalImageViewSize;
 }
 
-@property (nonatomic, retain) UIImageView *imageView;
+
 @end
 
 @implementation ImageCropperView
@@ -30,7 +30,7 @@
     self.clipsToBounds = YES;
     self.backgroundColor = [UIColor clearColor];
     if(self.imageView == nil){
-        self.imageView = [[[UIImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, self.frame.size.width, self.frame.size.height)] autorelease];
+        self.imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, self.frame.size.width, self.frame.size.height)];
         [self addSubview:imageView];
     }
     
@@ -39,17 +39,17 @@
     
     UIRotationGestureRecognizer *rotateGes = [[UIRotationGestureRecognizer alloc] initWithTarget:self action:@selector(rotateImage:)];
     [imageView addGestureRecognizer:rotateGes];
-    [rotateGes release];
+
     
     UIPinchGestureRecognizer *scaleGes = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(scaleImage:)];
     [imageView addGestureRecognizer:scaleGes];
-    [scaleGes release];
+
     
     UIPanGestureRecognizer *moveGes = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(moveImage:)];
     [moveGes setMinimumNumberOfTouches:1];
     [moveGes setMaximumNumberOfTouches:1];
     [imageView addGestureRecognizer:moveGes];
-    [moveGes release];
+
 }
 
 - (id)initWithFrame:(CGRect)frame {
@@ -67,7 +67,6 @@ float _lastTransX = 0.0, _lastTransY = 0.0;
 - (void)moveImage:(UIPanGestureRecognizer *)sender
 {
     CGPoint translatedPoint = [sender translationInView:self];
-    
     if([sender state] == UIGestureRecognizerStateBegan) {
         _lastTransX = 0.0;
         _lastTransY = 0.0;
@@ -121,7 +120,7 @@ float _lastRotation = 0.0;
 - (void)setImage:(UIImage *)image
 {
     if (_image != image) {
-        _image = [image retain];
+        _image = [image copy];
     }
     
     float _imageScale = self.frame.size.width / image.size.width;
@@ -169,7 +168,7 @@ float _lastRotation = 0.0;
     self.croppedImage = nil;
     self.imageView = nil;
     
-    [super dealloc];
+//    [super dealloc];
 }
 //-(UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event{
 //    return self;

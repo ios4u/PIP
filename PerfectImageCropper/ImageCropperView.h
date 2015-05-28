@@ -10,15 +10,12 @@
 
 @protocol ImageCropperDelegate;
 
-@interface ImageCropperView : UIView {
-	UIImageView *imageView;
-
-}
+@interface ImageCropperView : UIView
 
 @property (nonatomic, strong) UIImage *image;
 @property (nonatomic, strong) UIImage *croppedImage;
-
-@property (nonatomic, assign) id <ImageCropperDelegate> delegate;
+@property(nonatomic, strong) UIImageView *imageView;
+@property (nonatomic, weak) id <ImageCropperDelegate> delegate;
 
 - (void)setup;
 - (void)finishCropping;

@@ -13,6 +13,7 @@
 #import "UIImageView+WebCache.h"
 #import "PendantImageView.h"
 #import "BackImageView.h"
+#import <CoreImage/CoreImage.h>
 
 #define kScreenWidth [UIScreen mainScreen].bounds.size.width
 
@@ -145,13 +146,14 @@
 
 
 - (void)viewDidLoad {
+    
     [super viewDidLoad];
     [self arrayInit];
-
+    
     _pendantImageView = [[PendantImageView alloc] init];
     
     _backgroundView = [[UIView alloc]initWithFrame:CGRectMake(0, 84, kScreenWidth, kScreenWidth/320 * 192)];
-    _backgroundView.center = CGPointMake(kScreenWidth/2, _backgroundView.frame.size.height/2+_backgroundView.frame.origin.y);
+//    _backgroundView.center = CGPointMake(kScreenWidth/2, _backgroundView.frame.size.height/2+_backgroundView.frame.origin.y);
     [self.view addSubview:_backgroundView];
     
     _selectedPipDic = _array.firstObject;
@@ -171,7 +173,7 @@
     [_chooseBtn setTitle:@"选择画中画" forState:UIControlStateNormal];
     _chooseBtn.backgroundColor = [UIColor redColor];
     _chooseBtn.frame = CGRectMake(CGRectGetMaxX(_btn.frame)+50, _btn.frame.origin.y, 100, 50);
-    [_chooseBtn addTarget:self action:@selector(showTableView:) forControlEvents:UIControlEventTouchUpInside];
+    [_chooseBtn addTarget:self action:@selector(showPIPTableView:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:_chooseBtn];
     
     
@@ -259,8 +261,20 @@
 //        [_cropper bringSubviewToFront:_pendantImageView];
     }
     
-    _cropper.image = [UIImage imageNamed:@"IMG_0027.JPG"];
-//    [_cropper reset];
+    UIImage *image = [UIImage imageNamed:@"IMG_0027.JPG"];
+    
+    CIContext *context = [CIContext contextWithOptions:nil];
+    //黑白滤镜
+    CIImage *beginImage = [CIImage imageWithCGImage:image.CGImage];
+    CIFilter *filter = [CIFilter filterWithName:@"CIPhotoEffectNoir"
+                                  keysAndValues: kCIInputImageKey, beginImage, nil];
+
+    CIImage *outputImage = [filter outputImage];
+    CGImageRef cgimg = [context createCGImage:outputImage fromRect:[beginImage extent]];
+    UIImage *newImage = [UIImage imageWithCGImage:cgimg scale:image.scale orientation:image.imageOrientation];
+    _cropper.image = newImage;
+    CGImageRelease(cgimg);
+
 }
 
 
@@ -282,7 +296,7 @@
     
 }
 
--(void)showTableView:(UIButton *)btn{
+-(void)showPIPTableView:(UIButton *)btn{
     btn.selected = !btn.selected;
     if (btn.selected) {
         if (!_tableView) {
