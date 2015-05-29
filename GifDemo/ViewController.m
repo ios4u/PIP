@@ -14,6 +14,8 @@
 #import "PendantImageView.h"
 #import "BackImageView.h"
 #import <CoreImage/CoreImage.h>
+#import "ImageFilterItem.h"
+#import "UIImage+Util.h"
 
 #define kScreenWidth [UIScreen mainScreen].bounds.size.width
 
@@ -29,6 +31,10 @@
     PendantImageView *_pendantImageView;
     UIImageView *_lastImageView;
     UIView *_backgroundView;
+    
+    UIScrollView *_imageFilterScrollView;
+    NSMutableArray *_filterNamesArray;
+    UIImage *_originalImage;
 }
 @end
 
@@ -144,12 +150,43 @@
     [array addObject:dict9];
 }
 
+-(void)filterNamesArrayInit{
+    _filterNamesArray = [NSMutableArray array];
+    NSDictionary *dict0 = @{@"NONE":@"None"};
+    NSDictionary *dict1 = @{@"CISRGBToneCurveToLinear":@"Linear"};
+    NSDictionary *dict2 = @{@"CIVignetteEffect":@"Effect"};
+    NSDictionary *dict3 = @{@"CIPhotoEffectInstant":@"Instant"};
+    NSDictionary *dict4 = @{@"CIPhotoEffectProcess":@"Process"};
+    NSDictionary *dict5 = @{@"CIPhotoEffectTransfer":@"Transfer"};
+    NSDictionary *dict6 = @{@"CISepiaTone":@"Tone"};
+    NSDictionary *dict7 = @{@"CIPhotoEffectChrome":@"Chrome"};
+    NSDictionary *dict8 = @{@"CIPhotoEffectFade":@"Fade"};
+    NSDictionary *dict9 = @{@"CILinearToSRGBToneCurve":@"Curve"};
+    NSDictionary *dict10 = @{@"CIPhotoEffectTonal":@"Tonal"};
+    NSDictionary *dict11 = @{@"CIPhotoEffectNoir":@"Noir"};
+    NSDictionary *dict12 = @{@"CIPhotoEffectMono":@"Mono"};
+    NSDictionary *dict13 = @{@"CIColorInvert":@"Invert"};
+    [_filterNamesArray  addObject:dict0];
+    [_filterNamesArray  addObject:dict1];
+    [_filterNamesArray  addObject:dict2];
+    [_filterNamesArray  addObject:dict3];
+    [_filterNamesArray  addObject:dict4];
+    [_filterNamesArray  addObject:dict5];
+    [_filterNamesArray  addObject:dict6];
+    [_filterNamesArray  addObject:dict7];
+    [_filterNamesArray  addObject:dict8];
+    [_filterNamesArray  addObject:dict9];
+    [_filterNamesArray  addObject:dict10];
+    [_filterNamesArray  addObject:dict11];
+    [_filterNamesArray  addObject:dict12];
+    [_filterNamesArray  addObject:dict13];
+}
 
 - (void)viewDidLoad {
     
     [super viewDidLoad];
     [self arrayInit];
-    
+    [self filterNamesArrayInit];
     _pendantImageView = [[PendantImageView alloc] init];
     
     _backgroundView = [[UIView alloc]initWithFrame:CGRectMake(0, 84, kScreenWidth, kScreenWidth/320 * 192)];
@@ -170,17 +207,24 @@
     [self.view addSubview:_btn];
     
     _chooseBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    [_chooseBtn setTitle:@"选择画中画" forState:UIControlStateNormal];
+    [_chooseBtn setTitle:@"画中画" forState:UIControlStateNormal];
     _chooseBtn.backgroundColor = [UIColor redColor];
-    _chooseBtn.frame = CGRectMake(CGRectGetMaxX(_btn.frame)+50, _btn.frame.origin.y, 100, 50);
+    _chooseBtn.frame = CGRectMake(CGRectGetMaxX(_btn.frame)+20, _btn.frame.origin.y, 100, 50);
     [_chooseBtn addTarget:self action:@selector(showPIPTableView:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:_chooseBtn];
     
     
+    UIButton *imageFilterBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [imageFilterBtn setTitle:@"滤镜" forState:UIControlStateNormal];
+    imageFilterBtn.frame = CGRectMake(CGRectGetMaxX(_chooseBtn.frame)+20, _btn.frame.origin.y, 50, 50);
+    imageFilterBtn.backgroundColor = [UIColor redColor];
+    [imageFilterBtn addTarget:self action:@selector(showImageFilterScrollView:) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:imageFilterBtn];
+    
     UIButton *resetButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [resetButton setTitle:@"重置" forState:UIControlStateNormal];
     resetButton.backgroundColor = [UIColor redColor];
-    resetButton.frame = CGRectMake(CGRectGetMaxX(_chooseBtn.frame)+50, _chooseBtn.frame.origin.y, 50, 50);
+    resetButton.frame = CGRectMake(CGRectGetMaxX(imageFilterBtn.frame)+20, _chooseBtn.frame.origin.y, 50, 50);
     [resetButton addTarget:self action:@selector(resetCroperView) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:resetButton];
     
@@ -262,21 +306,79 @@
     }
     
     UIImage *image = [UIImage imageNamed:@"IMG_0027.JPG"];
-    
-    CIContext *context = [CIContext contextWithOptions:nil];
-    //黑白滤镜
-    CIImage *beginImage = [CIImage imageWithCGImage:image.CGImage];
-    CIFilter *filter = [CIFilter filterWithName:@"CIPhotoEffectNoir"
-                                  keysAndValues: kCIInputImageKey, beginImage, nil];
-
-    CIImage *outputImage = [filter outputImage];
-    CGImageRef cgimg = [context createCGImage:outputImage fromRect:[beginImage extent]];
-    UIImage *newImage = [UIImage imageWithCGImage:cgimg scale:image.scale orientation:image.imageOrientation];
-    _cropper.image = newImage;
-    CGImageRelease(cgimg);
+    _originalImage = [image copy];
+    _cropper.image = image;
+//    CIContext *context = [CIContext contextWithOptions:nil];
+//    //黑白滤镜
+//    CIImage *beginImage = [CIImage imageWithCGImage:image.CGImage];
+//    CIFilter *filter = [CIFilter filterWithName:@"CIPhotoEffectNoir"
+//                                  keysAndValues: kCIInputImageKey, beginImage, nil];
+//
+//    CIImage *outputImage = [filter outputImage];
+//    CGImageRef cgimg = [context createCGImage:outputImage fromRect:[beginImage extent]];
+//    UIImage *newImage = [UIImage imageWithCGImage:cgimg scale:image.scale orientation:image.imageOrientation];
+//    _cropper.image = newImage;
+//    CGImageRelease(cgimg);
 
 }
 
+-(void)showImageFilterScrollView:(UIButton *)btn{
+    btn.selected = !btn.selected;
+    if (btn.selected) {
+        if (_imageFilterScrollView == nil) {
+            UIImage *iconThumbnail = [_originalImage aspectFill:CGSizeMake(50*[[UIScreen mainScreen] scale], 50*[[UIScreen mainScreen] scale])];
+            
+            _imageFilterScrollView = [[UIScrollView alloc]init];
+            _imageFilterScrollView.frame = CGRectMake(0, btn.frame.origin.y-80, kScreenWidth, 80);
+            _imageFilterScrollView.contentSize = CGSizeMake(80*_filterNamesArray.count-10, 80);
+            for (NSInteger i = 0 ; i<_filterNamesArray.count; i++) {
+                NSDictionary *dict = _filterNamesArray[i];
+                NSString *filterNameValue = [dict allValues].firstObject;
+                NSString *filterNameKey = [dict allKeys].firstObject;
+                ImageFilterItem *btn = [[ImageFilterItem alloc]init];
+                btn.frame = CGRectMake(i*80, 0, 80, 80);
+                btn.imageView.backgroundColor = [UIColor blueColor];
+                btn.imageView.layer.borderWidth = 1.0f;
+                btn.imageView.layer.borderColor = [UIColor orangeColor].CGColor;
+                btn.backgroundColor = [UIColor grayColor];
+                btn.titleLabel.text = filterNameValue;
+                [_imageFilterScrollView addSubview:btn];
+                if (i==0) {
+                    btn.iconImage = [iconThumbnail copy];
+                    [btn setIconImage:[iconThumbnail copy]];
+                }else{
+                    if (btn.iconImage == nil) {
+                        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                            UIImage *iconImage = [self filteredImage:iconThumbnail withFilterName:filterNameKey];
+                            [btn performSelectorOnMainThread:@selector(setIconImage:) withObject:iconImage waitUntilDone:NO];
+                        });
+                    }
+                }
+                
+            }
+            [self.view addSubview:_imageFilterScrollView];
+            
+        }
+    }else{
+        [_imageFilterScrollView removeFromSuperview];
+        _imageFilterScrollView = nil;
+    }
+    
+}
+
+-(UIImage *)filteredImage:(UIImage *)image withFilterName:(NSString *)filterName{
+    CIContext *context = [CIContext contextWithOptions:nil];
+    //黑白滤镜
+    CIImage *beginImage = [CIImage imageWithCGImage:image.CGImage];
+    CIFilter *filter = [CIFilter filterWithName:filterName
+                                  keysAndValues: kCIInputImageKey, beginImage, nil];
+    
+    CIImage *outputImage = [filter outputImage];
+    CGImageRef cgimg = [context createCGImage:outputImage fromRect:[beginImage extent]];
+    UIImage *newImage = [UIImage imageWithCGImage:cgimg scale:image.scale orientation:image.imageOrientation];
+    CGImageRelease(cgimg);
+    return newImage;
+}
 
 -(void)resetCroperView{
     [_cropper reset];

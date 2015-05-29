@@ -49,6 +49,8 @@
 		1D5EF4211B144D6200DAD302 /* UIView+WebCacheOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D5EF4111B144D6200DAD302 /* UIView+WebCacheOperation.m */; };
 		1D5EF4281B144D7E00DAD302 /* UIImage+Rotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D5EF4261B144D7E00DAD302 /* UIImage+Rotation.m */; };
 		1D5EF4381B14670700DAD302 /* ImageCropperView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D5EF4371B14670700DAD302 /* ImageCropperView.m */; };
+		1D928B571B186C2A00817E3C /* ImageFilterItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D928B561B186C2A00817E3C /* ImageFilterItem.m */; };
+		1D928B5B1B187BDE00817E3C /* UIImage+Util.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D928B5A1B187BDE00817E3C /* UIImage+Util.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -132,6 +134,10 @@
 		1D5EF4251B144D7E00DAD302 /* UIImage+Rotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Rotation.h"; sourceTree = "<group>"; };
 		1D5EF4261B144D7E00DAD302 /* UIImage+Rotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Rotation.m"; sourceTree = "<group>"; };
 		1D5EF4371B14670700DAD302 /* ImageCropperView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageCropperView.m; sourceTree = "<group>"; };
+		1D928B551B186C2A00817E3C /* ImageFilterItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageFilterItem.h; sourceTree = "<group>"; };
+		1D928B561B186C2A00817E3C /* ImageFilterItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageFilterItem.m; sourceTree = "<group>"; };
+		1D928B591B187BDE00817E3C /* UIImage+Util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIImage+Util.h"; path = "GifDemo/UIImage+Util.h"; sourceTree = "<group>"; };
+		1D928B5A1B187BDE00817E3C /* UIImage+Util.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIImage+Util.m"; path = "GifDemo/UIImage+Util.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -175,6 +181,7 @@
 		1D5EF3B71B142FE800DAD302 = {
 			isa = PBXGroup;
 			children = (
+				1D928B581B187BB400817E3C /* Category */,
 				1D5EF4221B144D7E00DAD302 /* PerfectImageCropper */,
 				1D5EF3F01B144D6200DAD302 /* SDWebImage */,
 				1D5EF3C21B142FE800DAD302 /* GifDemo */,
@@ -209,6 +216,8 @@
 				1D50F7A91B15767F00FD70B6 /* PendantImageView.m */,
 				1D50F7AD1B15D86200FD70B6 /* BackImageView.h */,
 				1D50F7AE1B15D86200FD70B6 /* BackImageView.m */,
+				1D928B551B186C2A00817E3C /* ImageFilterItem.h */,
+				1D928B561B186C2A00817E3C /* ImageFilterItem.m */,
 			);
 			path = GifDemo;
 			sourceTree = "<group>";
@@ -290,6 +299,15 @@
 				1D5EF4261B144D7E00DAD302 /* UIImage+Rotation.m */,
 			);
 			path = PerfectImageCropper;
+			sourceTree = "<group>";
+		};
+		1D928B581B187BB400817E3C /* Category */ = {
+			isa = PBXGroup;
+			children = (
+				1D928B591B187BDE00817E3C /* UIImage+Util.h */,
+				1D928B5A1B187BDE00817E3C /* UIImage+Util.m */,
+			);
+			name = Category;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -413,10 +431,12 @@
 				1D5EF4151B144D6200DAD302 /* SDWebImageCompat.m in Sources */,
 				1D50F7AA1B15767F00FD70B6 /* PendantImageView.m in Sources */,
 				1D5EF41C1B144D6200DAD302 /* UIImage+GIF.m in Sources */,
+				1D928B5B1B187BDE00817E3C /* UIImage+Util.m in Sources */,
 				1D5EF41A1B144D6200DAD302 /* SDWebImagePrefetcher.m in Sources */,
 				1D5EF3EB1B14300C00DAD302 /* GifView.m in Sources */,
 				1D50F7AF1B15D86200FD70B6 /* BackImageView.m in Sources */,
 				1D5EF3C91B142FE800DAD302 /* AppDelegate.m in Sources */,
+				1D928B571B186C2A00817E3C /* ImageFilterItem.m in Sources */,
 				1D5EF41E1B144D6200DAD302 /* UIImage+WebP.m in Sources */,
 				1D5EF4281B144D7E00DAD302 /* UIImage+Rotation.m in Sources */,
 				1D5EF4201B144D6200DAD302 /* UIImageView+WebCache.m in Sources */,
