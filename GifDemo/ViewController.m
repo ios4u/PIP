@@ -19,7 +19,7 @@
 
 #define kScreenWidth [UIScreen mainScreen].bounds.size.width
 
-@interface ViewController ()<UITableViewDataSource,UITableViewDelegate>
+@interface ViewController ()<UITableViewDataSource,UITableViewDelegate,ImageFilterItemDelegate>
 {
     ImageCropperView *_cropper;
     UIButton *_btn;
@@ -154,7 +154,7 @@
     _filterNamesArray = [NSMutableArray array];
     NSDictionary *dict0 = @{@"NONE":@"None"};
     NSDictionary *dict1 = @{@"CISRGBToneCurveToLinear":@"Linear"};
-    NSDictionary *dict2 = @{@"CIVignetteEffect":@"Effect"};
+//    NSDictionary *dict2 = @{@"CIVignetteEffect":@"Effect"};
     NSDictionary *dict3 = @{@"CIPhotoEffectInstant":@"Instant"};
     NSDictionary *dict4 = @{@"CIPhotoEffectProcess":@"Process"};
     NSDictionary *dict5 = @{@"CIPhotoEffectTransfer":@"Transfer"};
@@ -168,7 +168,7 @@
     NSDictionary *dict13 = @{@"CIColorInvert":@"Invert"};
     [_filterNamesArray  addObject:dict0];
     [_filterNamesArray  addObject:dict1];
-    [_filterNamesArray  addObject:dict2];
+//    [_filterNamesArray  addObject:dict2];
     [_filterNamesArray  addObject:dict3];
     [_filterNamesArray  addObject:dict4];
     [_filterNamesArray  addObject:dict5];
@@ -336,12 +336,14 @@
                 NSString *filterNameValue = [dict allValues].firstObject;
                 NSString *filterNameKey = [dict allKeys].firstObject;
                 ImageFilterItem *btn = [[ImageFilterItem alloc]init];
+                btn.filterDict = dict;
                 btn.frame = CGRectMake(i*80, 0, 80, 80);
                 btn.imageView.backgroundColor = [UIColor blueColor];
                 btn.imageView.layer.borderWidth = 1.0f;
                 btn.imageView.layer.borderColor = [UIColor orangeColor].CGColor;
                 btn.backgroundColor = [UIColor grayColor];
                 btn.titleLabel.text = filterNameValue;
+                btn.delegate = self;
                 [_imageFilterScrollView addSubview:btn];
                 if (i==0) {
                     btn.iconImage = [iconThumbnail copy];
@@ -379,6 +381,23 @@
     CGImageRelease(cgimg);
     return newImage;
 }
+
+
+#pragma mark 图片滤镜处理代理
+-(void)imageFilterItemClick:(ImageFilterItem *)itemView filterDict:(NSDictionary *)filterDict{
+    NSString *filterNameKey = [filterDict allKeys].firstObject;
+    if ([filterNameKey isEqualToString:@"NONE"]) {
+        _cropper.image = [_originalImage copy];
+        return;
+    }
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        UIImage *newimage = [self filteredImage:[_originalImage copy] withFilterName:filterNameKey];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            _cropper.image = newimage;
+        });
+    });
+}
+
 
 -(void)resetCroperView{
     [_cropper reset];
