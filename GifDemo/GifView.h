@@ -29,11 +29,11 @@
     CGFloat _height;
 }
 
-- (id)initWithCenter:(CGPoint)center fileURL:(NSURL*)fileURL;
-- (void)initFileURL:(NSURL*)fileURL;
+//- (id)initWithCenter:(CGPoint)center fileURL:(NSURL*)fileURL;
+//- (void)initFileURL:(NSURL*)fileURL;
 
-- (void)startGif;
-- (void)stopGif;
+//- (void)startGif;
+//- (void)stopGif;
 
 /*
  * @brief 获取gif图中每一帧的信息

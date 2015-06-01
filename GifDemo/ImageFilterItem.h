@@ -15,10 +15,13 @@
 @end
 
 @interface ImageFilterItem : UIView
+@property(nonatomic,assign) BOOL selected;
 @property(nonatomic,strong) UIImageView *imageView;
 @property(nonatomic,strong) UILabel *titleLabel;
 @property(nonatomic,strong) NSDictionary *filterDict;
 @property(nonatomic,strong) UIImage *iconImage;
+@property(nonatomic,strong) UIView *backgroundView;
+
 @property (nonatomic , weak) id<ImageFilterItemDelegate> delegate;
 
 - (void)setIconImage:(UIImage *)iconImage;

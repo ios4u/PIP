@@ -33,6 +33,7 @@
     UIView *_backgroundView;
     
     UIScrollView *_imageFilterScrollView;
+    ImageFilterItem *_selectedImageFilterItem;
     NSMutableArray *_filterNamesArray;
     UIImage *_originalImage;
 }
@@ -154,7 +155,7 @@
     _filterNamesArray = [NSMutableArray array];
     NSDictionary *dict0 = @{@"NONE":@"None"};
     NSDictionary *dict1 = @{@"CISRGBToneCurveToLinear":@"Linear"};
-//    NSDictionary *dict2 = @{@"CIVignetteEffect":@"Effect"};
+    NSDictionary *dict2 = @{@"CIVignetteEffect":@"Effect"};
     NSDictionary *dict3 = @{@"CIPhotoEffectInstant":@"Instant"};
     NSDictionary *dict4 = @{@"CIPhotoEffectProcess":@"Process"};
     NSDictionary *dict5 = @{@"CIPhotoEffectTransfer":@"Transfer"};
@@ -168,7 +169,7 @@
     NSDictionary *dict13 = @{@"CIColorInvert":@"Invert"};
     [_filterNamesArray  addObject:dict0];
     [_filterNamesArray  addObject:dict1];
-//    [_filterNamesArray  addObject:dict2];
+    [_filterNamesArray  addObject:dict2];
     [_filterNamesArray  addObject:dict3];
     [_filterNamesArray  addObject:dict4];
     [_filterNamesArray  addObject:dict5];
@@ -190,7 +191,6 @@
     _pendantImageView = [[PendantImageView alloc] init];
     
     _backgroundView = [[UIView alloc]initWithFrame:CGRectMake(0, 84, kScreenWidth, kScreenWidth/320 * 192)];
-//    _backgroundView.center = CGPointMake(kScreenWidth/2, _backgroundView.frame.size.height/2+_backgroundView.frame.origin.y);
     [self.view addSubview:_backgroundView];
     
     _selectedPipDic = _array.firstObject;
@@ -302,23 +302,12 @@
         _pendantImageView.userInteractionEnabled = YES;
         
         [_cropper addSubview:_pendantImageView];
-//        [_cropper bringSubviewToFront:_pendantImageView];
+
     }
     
     UIImage *image = [UIImage imageNamed:@"IMG_0027.JPG"];
     _originalImage = [image copy];
     _cropper.image = image;
-//    CIContext *context = [CIContext contextWithOptions:nil];
-//    //黑白滤镜
-//    CIImage *beginImage = [CIImage imageWithCGImage:image.CGImage];
-//    CIFilter *filter = [CIFilter filterWithName:@"CIPhotoEffectNoir"
-//                                  keysAndValues: kCIInputImageKey, beginImage, nil];
-//
-//    CIImage *outputImage = [filter outputImage];
-//    CGImageRef cgimg = [context createCGImage:outputImage fromRect:[beginImage extent]];
-//    UIImage *newImage = [UIImage imageWithCGImage:cgimg scale:image.scale orientation:image.imageOrientation];
-//    _cropper.image = newImage;
-//    CGImageRelease(cgimg);
 
 }
 
@@ -335,24 +324,24 @@
                 NSDictionary *dict = _filterNamesArray[i];
                 NSString *filterNameValue = [dict allValues].firstObject;
                 NSString *filterNameKey = [dict allKeys].firstObject;
-                ImageFilterItem *btn = [[ImageFilterItem alloc]init];
-                btn.filterDict = dict;
-                btn.frame = CGRectMake(i*80, 0, 80, 80);
-                btn.imageView.backgroundColor = [UIColor blueColor];
-                btn.imageView.layer.borderWidth = 1.0f;
-                btn.imageView.layer.borderColor = [UIColor orangeColor].CGColor;
-                btn.backgroundColor = [UIColor grayColor];
-                btn.titleLabel.text = filterNameValue;
-                btn.delegate = self;
-                [_imageFilterScrollView addSubview:btn];
+                ImageFilterItem *btnItem = [[ImageFilterItem alloc]init];
+                btnItem.filterDict = dict;
+                btnItem.frame = CGRectMake(i*80, 0, 80, 80);
+                btnItem.imageView.backgroundColor = [UIColor blueColor];
+                btnItem.imageView.layer.borderWidth = 1.0f;
+                btnItem.imageView.layer.borderColor = [UIColor orangeColor].CGColor;
+                btnItem.backgroundColor = [UIColor grayColor];
+                btnItem.titleLabel.text = filterNameValue;
+                btnItem.delegate = self;
+                [_imageFilterScrollView addSubview:btnItem];
                 if (i==0) {
-                    btn.iconImage = [iconThumbnail copy];
-                    [btn setIconImage:[iconThumbnail copy]];
+                    btnItem.iconImage = [iconThumbnail copy];
+                    [btnItem setIconImage:[iconThumbnail copy]];
                 }else{
-                    if (btn.iconImage == nil) {
+                    if (btnItem.iconImage == nil) {
                         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                             UIImage *iconImage = [self filteredImage:iconThumbnail withFilterName:filterNameKey];
-                            [btn performSelectorOnMainThread:@selector(setIconImage:) withObject:iconImage waitUntilDone:NO];
+                            [btnItem performSelectorOnMainThread:@selector(setIconImage:) withObject:iconImage waitUntilDone:NO];
                         });
                     }
                 }
@@ -362,6 +351,7 @@
             
         }
     }else{
+        _selectedImageFilterItem = nil;
         [_imageFilterScrollView removeFromSuperview];
         _imageFilterScrollView = nil;
     }
@@ -369,12 +359,20 @@
 }
 
 -(UIImage *)filteredImage:(UIImage *)image withFilterName:(NSString *)filterName{
+    
     CIContext *context = [CIContext contextWithOptions:nil];
     //黑白滤镜
     CIImage *beginImage = [CIImage imageWithCGImage:image.CGImage];
     CIFilter *filter = [CIFilter filterWithName:filterName
                                   keysAndValues: kCIInputImageKey, beginImage, nil];
-    
+    if([filterName isEqualToString:@"CIVignetteEffect"]){
+        // parameters for CIVignetteEffect
+        CGFloat R = MIN(image.size.width, image.size.height)*image.scale/2;
+        CIVector *vct = [[CIVector alloc] initWithX:image.size.width*image.scale/2 Y:image.size.height*image.scale/2];
+        [filter setValue:vct forKey:@"inputCenter"];
+        [filter setValue:[NSNumber numberWithFloat:0.9] forKey:@"inputIntensity"];
+        [filter setValue:[NSNumber numberWithFloat:R] forKey:@"inputRadius"];
+    }
     CIImage *outputImage = [filter outputImage];
     CGImageRef cgimg = [context createCGImage:outputImage fromRect:[beginImage extent]];
     UIImage *newImage = [UIImage imageWithCGImage:cgimg scale:image.scale orientation:image.imageOrientation];
@@ -385,6 +383,10 @@
 
 #pragma mark 图片滤镜处理代理
 -(void)imageFilterItemClick:(ImageFilterItem *)itemView filterDict:(NSDictionary *)filterDict{
+    if (_selectedImageFilterItem) {
+        _selectedImageFilterItem.selected = NO;
+    }
+    _selectedImageFilterItem = itemView;
     NSString *filterNameKey = [filterDict allKeys].firstObject;
     if ([filterNameKey isEqualToString:@"NONE"]) {
         _cropper.image = [_originalImage copy];
